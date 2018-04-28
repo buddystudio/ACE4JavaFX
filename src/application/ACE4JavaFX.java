@@ -70,26 +70,33 @@ public class ACE4JavaFX extends Application
 	    
 	    ToggleGroup tGroup01 = new ToggleGroup();
 	    ToggleGroup tGroup02 = new ToggleGroup();
+	    ToggleGroup tGroup03 = new ToggleGroup();
 	    
-	    RadioMenuItem item01 = new RadioMenuItem("12px");
-	    RadioMenuItem item02 = new RadioMenuItem("14px");
-	    RadioMenuItem item03 = new RadioMenuItem("16px");
 	    
-	    item01.setToggleGroup(tGroup01);
-	    item02.setToggleGroup(tGroup01);
-	    item03.setToggleGroup(tGroup01);
-	    item02.setSelected(true);
+	    
+	    for(int i = 10; i < 21; i++)
+	    {
+	    	RadioMenuItem item = new RadioMenuItem(i + "px");
+	    	
+	    	item.setToggleGroup(tGroup01);
+	    	
+	    	fontSizeMenu.getItems().add(item);
+	    	
+	    	if(i == 14)
+	    	{
+	    		item.setSelected(true);
+	    	}
+	    	
+	    	item.setOnAction(fontSizeHandler);
+	    	
+	    }
 
-	    fontSizeMenu.getItems().addAll(item01, item02, item03);
+	    //fontSizeMenu.getItems().addAll(item01, item02, item03);
 	    OptionsMenu.getItems().addAll(langMenu, themeMenu, fontSizeMenu);
 	    
 	    menuBar.getMenus().addAll(fileMenu, OptionsMenu);
 	    
 	    exitMenuItem.setOnAction(menuHandler);
-	    
-	    item01.setOnAction(menuHandler);
-	    item02.setOnAction(menuHandler);
-	    item03.setOnAction(menuHandler);
 	    
 	    //File dirFile = new File("E:/Projects/ACE4JavaFX/bin/resources/ace-builds-master/src-noconflict");
 	    File dirFile = new File(this.getClass().getResource("/").getPath() + "/resources/ace-builds-master/src-noconflict");
@@ -123,8 +130,21 @@ public class ACE4JavaFX extends Application
             	
             	themeMenu.getItems().add(item);
             	
-            	item.setOnAction(menuHandler);
+            	item.setOnAction(themeHandler);
             	
+            }
+            else if(name.substring(0, 5).equals("mode-"))
+            {
+            	System.out.println(name); 
+            	System.out.println(name.substring(5, name.length() - 3));
+            	
+            	RadioMenuItem item = new RadioMenuItem(name.substring(5, name.length() - 3));
+            	
+            	item.setToggleGroup(tGroup03);
+            	
+            	langMenu.getItems().add(item);
+            	
+            	item.setOnAction(langueHandler);
             }
 	    }
 	}
@@ -140,23 +160,47 @@ public class ACE4JavaFX extends Application
 			{
 				Platform.exit();
 			}
-			else if(name.equals("12px"))
-			{
-				editorView.webView.getEngine().executeScript("editor.setFontSize(12);");
-			}
-			else if(name.equals("14px"))
-			{
-				editorView.webView.getEngine().executeScript("editor.setFontSize(14);");
-			}
-			else if(name.equals("16px"))
-			{
-				editorView.webView.getEngine().executeScript("editor.setFontSize(16);");
-			}
 			else
 			{
-				// Set theme.
-				editorView.webView.getEngine().executeScript("editor.setTheme(\"ace/theme/"+ name +"\");");
+				
 			}
+		}
+		
+	};
+	
+	private EventHandler<ActionEvent> langueHandler = new EventHandler<ActionEvent>()
+	{
+		@Override
+		public void handle(ActionEvent arg0) 
+		{
+			String name = ((MenuItem)arg0.getTarget()).getText();
+			
+			// Set code mode. 
+			editorView.webView.getEngine().executeScript("editor.session.setMode(\"ace/mode/"+ name +"\");");	
+		}	
+	};
+	
+	private EventHandler<ActionEvent> themeHandler = new EventHandler<ActionEvent>()
+	{
+		@Override
+		public void handle(ActionEvent arg0) 
+		{
+			String name = ((MenuItem)arg0.getTarget()).getText();
+			
+			// Set theme.
+			editorView.webView.getEngine().executeScript("editor.setTheme(\"ace/theme/"+ name +"\");");
+		}	
+	};
+	
+	private EventHandler<ActionEvent> fontSizeHandler = new EventHandler<ActionEvent>()
+	{
+		@Override
+		public void handle(ActionEvent arg0) 
+		{
+			String name = ((MenuItem)arg0.getTarget()).getText();
+			
+			// Set font size. 
+			editorView.webView.getEngine().executeScript("editor.setFontSize(" + name.substring(0, 2) + ");");
 		}
 		
 	};
