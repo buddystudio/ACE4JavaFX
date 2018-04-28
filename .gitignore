@@ -1,3 +1,9 @@
+/bin
+
+*.DS_Store
+
+*._.DS_Store
+
 # Compiled class file
 *.class
 
