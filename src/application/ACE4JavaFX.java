@@ -26,7 +26,7 @@ public class ACE4JavaFX extends Application
 	}
 	
 	private String curPath = this.getClass().getResource("/").getPath();
-	private String editorUrl = "file://" + curPath + "resources/ace-builds-master/editor3.html";
+	private String editorUrl = "file://" + curPath + "resources/ace-builds-master/editor.html";
 	
 	@Override
 	public void start(Stage stage) 

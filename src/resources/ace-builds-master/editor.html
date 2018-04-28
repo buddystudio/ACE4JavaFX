@@ -21,18 +21,73 @@
 </head>
 <body>
 
-<pre id="editor">function foo(items) {
-    var i;
-    for (i = 0; i &lt; items.length; i++) {
-        alert("Ace Rocks " + items[i]);
-    }
-}</pre>
+<pre id="editor">
+void setup()
+{
+	// 初始化代码
+
+}
+
+void loop()
+{
+	// 主程序代码
+
+}
+</pre>
 
 <script src="src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="src-noconflict/ext-language_tools.js" type="text/javascript" charset="utf-8"></script>
 <script>
     var editor = ace.edit("editor");
-    editor.setTheme("ace/theme/twilight");
-    editor.session.setMode("ace/mode/javascript");
+	
+	editor.setOptions({  
+        //      enableBasicAutocompletion: true,  
+        //      enableSnippets: true,  
+                enableLiveAutocompletion: true,//只能补全  
+            });  
+	
+	editor.setTheme("ace/theme/ambiance");
+	editor.setTheme("ace/theme/chaos");
+	editor.setTheme("ace/theme/clouds");
+	editor.setTheme("ace/theme/clouds_midnight");
+	editor.setTheme("ace/theme/cobalt");
+	editor.setTheme("ace/theme/chrome");
+	editor.setTheme("ace/theme/crimson_editor");
+	editor.setTheme("ace/theme/dawn");
+	editor.setTheme("ace/theme/dracula");
+	editor.setTheme("ace/theme/dreamweaver");
+	editor.setTheme("ace/theme/eclipse");
+	editor.setTheme("ace/theme/github");
+	editor.setTheme("ace/theme/gob");
+	editor.setTheme("ace/theme/gruvbox");
+	editor.setTheme("ace/theme/idle_fingers");
+	editor.setTheme("ace/theme/iplastic");
+	editor.setTheme("ace/theme/katzenmilch");
+	editor.setTheme("ace/theme/kr_theme");
+	editor.setTheme("ace/theme/kuroir");
+	editor.setTheme("ace/theme/merbivore");
+	editor.setTheme("ace/theme/merbivore_sof");
+	editor.setTheme("ace/theme/mono_industrial");
+	editor.setTheme("ace/theme/monokai");
+	editor.setTheme("ace/theme/pastel_on_dark");
+	editor.setTheme("ace/theme/solarized_dark");
+	editor.setTheme("ace/theme/solarized_light");
+	editor.setTheme("ace/theme/sqlserver");
+	editor.setTheme("ace/theme/terminal");
+	editor.setTheme("ace/theme/textmate");
+	editor.setTheme("ace/theme/tomorrow");
+	editor.setTheme("ace/theme/tomorrow_night");
+	editor.setTheme("ace/theme/tomorrow_night_blue");
+	editor.setTheme("ace/theme/tomorrow_night_bright");
+	editor.setTheme("ace/theme/tomorrow_night_eighties");
+	editor.setTheme("ace/theme/twilight");
+	editor.setTheme("ace/theme/vibrant_ink");
+	editor.setTheme("ace/theme/xcode");
+	
+    //editor.session.setMode("ace/mode/javascript");
+	editor.session.setMode("ace/mode/c_cpp");
+
+	editor.setFontSize(14);
 	
 </script>
 
