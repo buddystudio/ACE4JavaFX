@@ -1,11 +1,15 @@
 package application;
 	
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
@@ -18,7 +22,7 @@ import javafx.scene.layout.BorderPane;
 
 public class ACE4JavaFX extends Application 
 {
-	private BDEditorView editorView;
+	protected BDEditorView editorView;
 	
 	public static void main(String[] args) 
 	{
@@ -57,10 +61,11 @@ public class ACE4JavaFX extends Application
 	    Menu fileMenu = new Menu("File");
 	    
 	    MenuItem newMenuItem = new MenuItem("New");
+	    MenuItem openMenuItem = new MenuItem("Open");
 	    MenuItem saveMenuItem = new MenuItem("Save");
 	    MenuItem exitMenuItem = new MenuItem("Exit");
 	    
-	    fileMenu.getItems().addAll(newMenuItem, saveMenuItem, new SeparatorMenuItem(), exitMenuItem);
+	    fileMenu.getItems().addAll(newMenuItem, openMenuItem ,saveMenuItem, new SeparatorMenuItem(), exitMenuItem);
 	    
 	    Menu OptionsMenu = new Menu("Options");
 	    
@@ -71,8 +76,6 @@ public class ACE4JavaFX extends Application
 	    ToggleGroup tGroup01 = new ToggleGroup();
 	    ToggleGroup tGroup02 = new ToggleGroup();
 	    ToggleGroup tGroup03 = new ToggleGroup();
-	    
-	    
 	    
 	    for(int i = 10; i < 21; i++)
 	    {
@@ -88,7 +91,6 @@ public class ACE4JavaFX extends Application
 	    	}
 	    	
 	    	item.setOnAction(fontSizeHandler);
-	    	
 	    }
 
 	    //fontSizeMenu.getItems().addAll(item01, item02, item03);
@@ -96,6 +98,8 @@ public class ACE4JavaFX extends Application
 	    
 	    menuBar.getMenus().addAll(fileMenu, OptionsMenu);
 	    
+	    newMenuItem.setOnAction(menuHandler);
+	    openMenuItem.setOnAction(menuHandler);
 	    exitMenuItem.setOnAction(menuHandler);
 	    
 	    //File dirFile = new File("E:/Projects/ACE4JavaFX/bin/resources/ace-builds-master/src-noconflict");
@@ -151,6 +155,9 @@ public class ACE4JavaFX extends Application
 	
 	private EventHandler<ActionEvent> menuHandler = new EventHandler<ActionEvent>()
 	{
+		//BDEditorView view = 
+		
+		
 		@Override
 		public void handle(ActionEvent arg0) 
 		{
@@ -160,7 +167,62 @@ public class ACE4JavaFX extends Application
 			{
 				Platform.exit();
 			}
-			else
+			else if(name.equals("New"))
+			{
+				// Clean code.
+				editorView.webView.getEngine().executeScript("editor.setValue('');");
+			}
+			else if(name.equals("Open"))
+			{
+				File file;
+				
+				FileChooser fileChooser = new FileChooser();
+				
+				// Set file Filter.
+				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Arduino  (*.ino)", "*.ino"));
+				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("C++  (*.cpp)", "*.cpp"));;
+				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("C  (*.c)", "*.c"));
+				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Header Files  (*.h)", "*.h"));
+				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Java  (*.java)", "*.java"));
+				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Java Script  (*.js)", "*.js"));
+				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Python Code  (*.py)", "*.py"));
+				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text  (*.txt)", "*.txt"));
+				
+				// Show open file dialog
+				file = fileChooser.showOpenDialog(null);
+				
+				if(file == null)
+				{
+					return;
+				}
+				
+				try 
+				{
+					String code = BDCodeReader.readFileByLines(file.getPath());
+					
+					// Clean code.
+					editorView.webView.getEngine().executeScript("editor.setValue('');");
+					
+					// Set Code.
+					editorView.webView.getEngine().executeScript("editor.insert(\"" + code +"\");");
+				} 
+				catch (UnsupportedEncodingException e) 
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 
+				catch (FileNotFoundException e) 
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 
+				catch (IOException e) 
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			else if(name.equals("Save"))
 			{
 				
 			}
