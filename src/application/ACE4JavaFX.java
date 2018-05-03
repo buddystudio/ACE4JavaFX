@@ -100,6 +100,7 @@ public class ACE4JavaFX extends Application
 	    
 	    newMenuItem.setOnAction(menuHandler);
 	    openMenuItem.setOnAction(menuHandler);
+	    saveMenuItem.setOnAction(menuHandler);
 	    exitMenuItem.setOnAction(menuHandler);
 	    
 	    //File dirFile = new File("E:/Projects/ACE4JavaFX/bin/resources/ace-builds-master/src-noconflict");
@@ -155,9 +156,6 @@ public class ACE4JavaFX extends Application
 	
 	private EventHandler<ActionEvent> menuHandler = new EventHandler<ActionEvent>()
 	{
-		//BDEditorView view = 
-		
-		
 		@Override
 		public void handle(ActionEvent arg0) 
 		{
@@ -174,7 +172,7 @@ public class ACE4JavaFX extends Application
 			}
 			else if(name.equals("Open"))
 			{
-				File file;
+				File file =  null;
 				
 				FileChooser fileChooser = new FileChooser();
 				
@@ -200,6 +198,9 @@ public class ACE4JavaFX extends Application
 				{
 					String code = BDCodeReader.readFileByLines(file.getPath());
 					
+					code = code.replaceAll("\"","\\\\\"");
+					//code = code.replaceAll ("\\\\r\\\\n", "\n");
+					
 					// Clean code.
 					editorView.webView.getEngine().executeScript("editor.setValue('');");
 					
@@ -224,7 +225,45 @@ public class ACE4JavaFX extends Application
 			}
 			else if(name.equals("Save"))
 			{
+				File file =  null;
 				
+				FileChooser fileChooser = new FileChooser();
+				
+				// Set file Filter.
+				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Arduino  (*.ino)", "*.ino"));
+				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("C++  (*.cpp)", "*.cpp"));;
+				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("C  (*.c)", "*.c"));
+				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Header Files  (*.h)", "*.h"));
+				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Java  (*.java)", "*.java"));
+				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Java Script  (*.js)", "*.js"));
+				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Python Code  (*.py)", "*.py"));
+				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text  (*.txt)", "*.txt"));
+				
+				try
+				{
+					// Show open file dialog
+					file = fileChooser.showSaveDialog(null);
+				}
+				catch(Exception ex){}
+
+				if(file == null)
+				{
+					return;
+				}
+				
+				String code = (String) editorView.webView.getEngine().executeScript("editor.getValue()");
+				
+				// Write file
+				try 
+				{
+					BDCodeWriter.fileWriter(file.getPath(), code);
+				} 
+				catch (IOException e) 
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			
 			}
 		}
 		
