@@ -34,7 +34,7 @@ public class BDEditorCtrl
 	            			String code = (String) webView.getEngine().executeScript("editor.getValue()");
 	                        System.out.println(code);
 	                        
-	                        String code2 = "Testing.";
+	                        //webView.getEngine().executeScript("editor.session.setMode(\"ace/mode/c_cpp\");");
 	                        
 	                        // Set code font size.
 	                        webView.getEngine().executeScript("editor.setFontSize(14);");
@@ -55,15 +55,15 @@ public class BDEditorCtrl
 	                        // Find
 	                        //webView.getEngine().executeScript("editor.find('int',{backwards: false,wrap: false,caseSensitive: false,wholeWord: false,regExp: false});");
 	                        
-	                        // ²éÕÒÏÂÒ»¸öºÍÉÏÒ»¸ö
+	                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
 	                        //webView.getEngine().executeScript("editor.findNext();");
 	                        //webView.getEngine().executeScript("editor.findPrevious();");
 	                        
-	                        // Ìæ»»µ¥¸ö×Ö
+	                        // ï¿½æ»»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	                        //webView.getEngine().executeScript("editor.find('int');");
 	                        //webView.getEngine().executeScript("editor.replace('float');");
 	                        
-	                        // È«²¿Ìæ»»
+	                        // È«ï¿½ï¿½ï¿½æ»»
 	                        //webView.getEngine().executeScript("editor.find('int');");
 	                        //webView.getEngine().executeScript("editor.replaceAll('float');");
 	                        

@@ -276,8 +276,12 @@ public class ACE4JavaFX extends Application
 		{
 			String name = ((MenuItem)arg0.getTarget()).getText();
 			
+			String command = "editor.session.setMode(\"ace/mode/"+ name +"\");";
+			
+			System.out.println("Command is : " + command);
+			
 			// Set code mode. 
-			editorView.webView.getEngine().executeScript("editor.session.setMode(\"ace/mode/"+ name +"\");");	
+			editorView.webView.getEngine().executeScript(command);	
 		}	
 	};
 	
