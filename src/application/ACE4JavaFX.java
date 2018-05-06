@@ -1,5 +1,5 @@
 package application;
-	
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -18,6 +18,9 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
 import javafx.scene.layout.BorderPane;
 
 public class ACE4JavaFX extends Application 
@@ -67,7 +70,24 @@ public class ACE4JavaFX extends Application
 	    
 	    fileMenu.getItems().addAll(newMenuItem, openMenuItem ,saveMenuItem, new SeparatorMenuItem(), exitMenuItem);
 	    
-	    Menu OptionsMenu = new Menu("Options");
+	    Menu editMenu = new Menu("Edit");
+	    
+	    MenuItem undoItem = new MenuItem("Undo");
+	    MenuItem redoItem = new MenuItem("Redo");
+	    MenuItem copyItem = new MenuItem("Copy");
+	    MenuItem cutItem  = new MenuItem("Cut");
+	    MenuItem pasteItem = new MenuItem("Paste");
+	    MenuItem searchItem = new MenuItem("Serach");
+	    
+	    editMenu.getItems().addAll(undoItem, redoItem, copyItem, cutItem, pasteItem, searchItem);
+	    
+	    undoItem.setOnAction(editHandler);
+	    redoItem.setOnAction(editHandler);
+	    copyItem.setOnAction(editHandler);
+	    cutItem.setOnAction(editHandler);
+	    pasteItem.setOnAction(editHandler);
+	    
+	    Menu optionsMenu = new Menu("Options");
 	    
 	    Menu langMenu = new Menu("Langue");
 	    Menu themeMenu = new Menu("Theme");
@@ -93,10 +113,9 @@ public class ACE4JavaFX extends Application
 	    	item.setOnAction(fontSizeHandler);
 	    }
 
-	    //fontSizeMenu.getItems().addAll(item01, item02, item03);
-	    OptionsMenu.getItems().addAll(langMenu, themeMenu, fontSizeMenu);
+	    optionsMenu.getItems().addAll(langMenu, themeMenu, fontSizeMenu);
 	    
-	    menuBar.getMenus().addAll(fileMenu, OptionsMenu);
+	    menuBar.getMenus().addAll(fileMenu, editMenu, optionsMenu);
 	    
 	    newMenuItem.setOnAction(menuHandler);
 	    openMenuItem.setOnAction(menuHandler);
@@ -263,10 +282,73 @@ public class ACE4JavaFX extends Application
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			
 			}
 		}
-		
+	};
+	
+	private EventHandler<ActionEvent> editHandler = new EventHandler<ActionEvent>()
+	{
+		@Override
+		public void handle(ActionEvent arg0) 
+		{
+			String name = ((MenuItem)arg0.getTarget()).getText();
+			
+			String command = "";
+			
+			if(name.endsWith("Undo"))
+			{
+				// Undo.
+				command = "editor.undo();";
+			}
+			else if(name.equals("Redo"))
+			{
+				// Redo.
+				command = "editor.redo();";
+			}
+			else if(name.equals("Copy"))
+			{
+				// Copy
+				String text = (String)editorView.webView.getEngine().executeScript("editor.session.getTextRange(editor.getSelectionRange());");
+				
+				Clipboard clipboard = Clipboard.getSystemClipboard();
+				ClipboardContent cc = new ClipboardContent();
+				
+				cc.putString(text);
+				clipboard.setContent(cc);
+			}
+			else if(name.equals("Cut"))
+			{
+				// Cut
+				String text = (String)editorView.webView.getEngine().executeScript("editor.session.getTextRange(editor.getSelectionRange());");
+				
+				Clipboard clipboard = Clipboard.getSystemClipboard();
+				ClipboardContent cc = new ClipboardContent();
+				
+				cc.putString(text);
+				clipboard.setContent(cc);
+				
+				editorView.webView.getEngine().executeScript("editor.insert(\"\");");
+			}
+			else if(name.equals("Paste"))
+			{
+				// Paste
+				Clipboard clipboard = Clipboard.getSystemClipboard();
+				String text = clipboard.getContent(DataFormat.PLAIN_TEXT).toString();
+				
+				editorView.webView.getEngine().executeScript("editor.insert(\"" + text +"\");");
+			}
+			else if(name.equals("Search"))
+			{
+					
+			}	
+			
+			if(command != "")
+			{
+				System.out.println("Command is : " + command);
+				
+				editorView.webView.getEngine().executeScript(command);
+			}
+		}	
 	};
 	
 	private EventHandler<ActionEvent> langueHandler = new EventHandler<ActionEvent>()
