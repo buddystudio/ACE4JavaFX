@@ -18,18 +18,7 @@ public class BDEditorView extends BorderPane
 		this.url = homePageUrl;
 		this.webView.getEngine().load(homePageUrl);
 		this.setCenter(webView);
-		
-		//JSObject win  = (JSObject) this.webView.getEngine().executeScript("window"); 
-		
-		//win.setMember("tt", this);
-		
 	}
-	/*
-	public void go() 
-    {
-		System.out.println("Good Good Good");
-    }
-    */
 	
 	public WebView getWebView() 
 	{

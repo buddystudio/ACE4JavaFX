@@ -5,13 +5,14 @@ import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
 import javafx.concurrent.Worker.State;
 import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import netscape.javascript.JSObject;
 
-public class BDEditorCtrl 
+public class BDEditorCtrl
 {
 	private WebView webView;
 	
@@ -23,6 +24,7 @@ public class BDEditorCtrl
 		
 		win.setMember("test", this);
 
+		// Load complete.
 		this.webView.getEngine().getLoadWorker().stateProperty().addListener(  
 	        	new ChangeListener<State>() 
 	            {  
@@ -30,14 +32,24 @@ public class BDEditorCtrl
 	                {  
 	            		if (newState == Worker.State.SUCCEEDED) 
 	                    {
-	            			// Get code.
-	            			String code = (String) webView.getEngine().executeScript("editor.getValue()");
-	                        System.out.println(code);
+	                        
+	                        // ***** Test code *****
+	                        
+	                        //setFontSize(30);
+	            			
+	                        //insert("Hello World!");
+	                        //find("void");
+	                        //repalceAll("void", "abcd");
+	                        
+	                        System.out.println(getCode());
+	                        System.out.println("Code length is: " + getLength());
+	                        
+	                        // ***** End test *****
 	                        
 	                        //webView.getEngine().executeScript("editor.session.setMode(\"ace/mode/c_cpp\");");
 	                        
 	                        // Set code font size.
-	                        webView.getEngine().executeScript("editor.setFontSize(14);");
+	                        //webView.getEngine().executeScript("editor.setFontSize(14);");
 	                        
 	                        // Insert Code.
 	                        //webView.getEngine().executeScript("editor.insert(\"" + code2 +"\");");
@@ -48,9 +60,7 @@ public class BDEditorCtrl
 	                        
 	                        //webView.getEngine().executeScript("editor.gotoLine(3);");
 	                        
-	                        int length = (int)webView.getEngine().executeScript("editor.session.getLength();");
 	                        
-	                        System.out.println("Code length is: " + length);
 	                        
 	                        // Find
 	                        //webView.getEngine().executeScript("editor.find('int',{backwards: false,wrap: false,caseSensitive: false,wholeWord: false,regExp: false});");
@@ -98,6 +108,134 @@ public class BDEditorCtrl
     {
 		System.out.println("on change selection...");
     }
+	
+	// Set code font size.
+	public void setFontSize(int size)
+	{
+		// Set code font size.
+        webView.getEngine().executeScript("editor.setFontSize(" + size + ");");
+	}
+	
+	// Set mode.
+	public void setMode(String mode)
+	{
+		// Set code mode. 
+		webView.getEngine().executeScript("editor.session.setMode(\"ace/mode/"+ mode +"\");");	
+	}
+	
+	// Set theme.
+	public void setTheme(String theme)
+	{
+		// Set theme.
+		webView.getEngine().executeScript("editor.setTheme(\"ace/theme/"+ theme +"\");");
+	}
+	
+	// Undo
+	public void undo()
+	{
+		webView.getEngine().executeScript("editor.undo();");
+	}
+	
+	// Redo
+	public void redo()
+	{
+		webView.getEngine().executeScript("editor.redo();");
+	}
+	
+	// Copy.
+	public void copy()
+	{
+		String text = (String)webView.getEngine().executeScript("editor.session.getTextRange(editor.getSelectionRange());");
+		
+		Clipboard clipboard = Clipboard.getSystemClipboard();
+		ClipboardContent cc = new ClipboardContent();
+		
+		cc.putString(text);
+		clipboard.setContent(cc);
+	}
+	
+	// Cut.
+	public void cut()
+	{
+		String text = (String)webView.getEngine().executeScript("editor.session.getTextRange(editor.getSelectionRange());");
+		
+		Clipboard clipboard = Clipboard.getSystemClipboard();
+		ClipboardContent cc = new ClipboardContent();
+		
+		cc.putString(text);
+		clipboard.setContent(cc);
+		
+		webView.getEngine().executeScript("editor.insert(\"\");");
+	}
+	
+	// Paste.
+	public void paste()
+	{
+		Clipboard clipboard = Clipboard.getSystemClipboard();
+		String text = clipboard.getContent(DataFormat.PLAIN_TEXT).toString();
+		
+		webView.getEngine().executeScript("editor.insert(\"" + text +"\");");
+	}
+	
+	// Insert the code.
+	public void insert(String code)
+	{
+		webView.getEngine().executeScript("editor.insert(\"" + code +"\");");		
+	}
+	
+	// Find.
+	public void find(String keyword)
+	{
+		webView.getEngine().executeScript("editor.find('" + keyword + "',{backwards: false,wrap: false,caseSensitive: false,wholeWord: false,regExp: false});");
+	}
+	
+	// Find next.
+	public void findNext()
+	{
+		webView.getEngine().executeScript("editor.findNext();");
+	}
+	
+	// Find previous
+	public void findPrevious()
+	{
+		webView.getEngine().executeScript("editor.findPrevious();");
+	}
+	
+	// Replace.
+	public void repalce(String keyword_A, String keyword_B)
+	{
+		webView.getEngine().executeScript("editor.find('" + keyword_A + "');");
+        webView.getEngine().executeScript("editor.replace('" + keyword_B + "');");	
+	}
+	
+	// Replace.
+	public void repalceAll(String keyword_A, String keyword_B)
+	{
+		webView.getEngine().executeScript("editor.find('" + keyword_A + "');");
+        webView.getEngine().executeScript("editor.replaceAll('" + keyword_B + "');");
+	}
+	
+	// Go to line.
+	public void gotoLine(int num)
+	{
+		webView.getEngine().executeScript("editor.gotoLine(" + num + ");");
+	}
+	
+	// Get source code from the editor.
+	public String getCode()
+	{
+		// Get code.
+		String code = (String) webView.getEngine().executeScript("editor.getValue()");
+        
+		return code;
+	}
+	
+	public int getLength()
+	{
+		int length = (int)webView.getEngine().executeScript("editor.session.getLength();");
+        
+		return length;
+	}
 	
 	private void addJSHandlers(Window ownerWindow) 
 	{

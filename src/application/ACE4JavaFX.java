@@ -26,6 +26,7 @@ import javafx.scene.layout.BorderPane;
 public class ACE4JavaFX extends Application 
 {
 	protected BDEditorView editorView;
+	protected BDEditorCtrl editorCtrl;
 	
 	public static void main(String[] args) 
 	{
@@ -34,6 +35,7 @@ public class ACE4JavaFX extends Application
 	
 	private String curPath = this.getClass().getResource("/").getPath();
 	private String editorUrl = "file://" + curPath + "resources/ace-builds-master/editor.html";
+	private String acePath = "/resources/ace-builds-master/src-noconflict";
 	
 	@Override
 	public void start(Stage stage) 
@@ -41,8 +43,7 @@ public class ACE4JavaFX extends Application
 		BorderPane root  = new BorderPane();
 
 		editorView = new BDEditorView(stage, editorUrl);
-		
-		new BDEditorCtrl(editorView);
+		editorCtrl = new BDEditorCtrl(editorView);
 
 		MenuBar menuBar = new MenuBar();
 	    
@@ -88,7 +89,6 @@ public class ACE4JavaFX extends Application
 	    pasteItem.setOnAction(editHandler);
 	    
 	    Menu optionsMenu = new Menu("Options");
-	    
 	    Menu langMenu = new Menu("Langue");
 	    Menu themeMenu = new Menu("Theme");
 	    Menu fontSizeMenu = new Menu("Font Size");
@@ -97,7 +97,7 @@ public class ACE4JavaFX extends Application
 	    ToggleGroup tGroup02 = new ToggleGroup();
 	    ToggleGroup tGroup03 = new ToggleGroup();
 	    
-	    for(int i = 10; i < 21; i++)
+	    for(int i = 10; i < 31; i++)
 	    {
 	    	RadioMenuItem item = new RadioMenuItem(i + "px");
 	    	
@@ -123,9 +123,7 @@ public class ACE4JavaFX extends Application
 	    exitMenuItem.setOnAction(menuHandler);
 	    
 	    //File dirFile = new File("E:/Projects/ACE4JavaFX/bin/resources/ace-builds-master/src-noconflict");
-	    File dirFile = new File(this.getClass().getResource("/").getPath() + "/resources/ace-builds-master/src-noconflict");
-	    
-	    //System.out.println(this.getClass().getResource("/").getPath());
+	    File dirFile = new File(this.getClass().getResource("/").getPath() + this.acePath);
 	    
 	    if (!dirFile.exists()) 
 	    {  
@@ -135,7 +133,6 @@ public class ACE4JavaFX extends Application
         }
 	    
 	    String[] fileList = dirFile.list();
-	    //System.out.println(fileList.length); 
 	    
 	    for (int i = 0; i < fileList.length; i++) 
 	    {
@@ -218,7 +215,6 @@ public class ACE4JavaFX extends Application
 					String code = BDCodeReader.readFileByLines(file.getPath());
 					
 					code = code.replaceAll("\"","\\\\\"");
-					//code = code.replaceAll ("\\\\r\\\\n", "\n");
 					
 					// Clean code.
 					editorView.webView.getEngine().executeScript("editor.setValue('');");
@@ -270,7 +266,7 @@ public class ACE4JavaFX extends Application
 					return;
 				}
 				
-				String code = (String) editorView.webView.getEngine().executeScript("editor.getValue()");
+				String code = editorCtrl.getCode();
 				
 				// Write file
 				try 
@@ -293,60 +289,34 @@ public class ACE4JavaFX extends Application
 		{
 			String name = ((MenuItem)arg0.getTarget()).getText();
 			
-			String command = "";
-			
 			if(name.endsWith("Undo"))
 			{
 				// Undo.
-				command = "editor.undo();";
+				editorCtrl.undo();
 			}
 			else if(name.equals("Redo"))
 			{
 				// Redo.
-				command = "editor.redo();";
+				editorCtrl.redo();
 			}
 			else if(name.equals("Copy"))
 			{
 				// Copy
-				String text = (String)editorView.webView.getEngine().executeScript("editor.session.getTextRange(editor.getSelectionRange());");
-				
-				Clipboard clipboard = Clipboard.getSystemClipboard();
-				ClipboardContent cc = new ClipboardContent();
-				
-				cc.putString(text);
-				clipboard.setContent(cc);
+				editorCtrl.copy();
 			}
 			else if(name.equals("Cut"))
 			{
 				// Cut
-				String text = (String)editorView.webView.getEngine().executeScript("editor.session.getTextRange(editor.getSelectionRange());");
-				
-				Clipboard clipboard = Clipboard.getSystemClipboard();
-				ClipboardContent cc = new ClipboardContent();
-				
-				cc.putString(text);
-				clipboard.setContent(cc);
-				
-				editorView.webView.getEngine().executeScript("editor.insert(\"\");");
+				editorCtrl.cut();
 			}
 			else if(name.equals("Paste"))
 			{
 				// Paste
-				Clipboard clipboard = Clipboard.getSystemClipboard();
-				String text = clipboard.getContent(DataFormat.PLAIN_TEXT).toString();
-				
-				editorView.webView.getEngine().executeScript("editor.insert(\"" + text +"\");");
+				editorCtrl.paste();
 			}
 			else if(name.equals("Search"))
 			{
 					
-			}	
-			
-			if(command != "")
-			{
-				System.out.println("Command is : " + command);
-				
-				editorView.webView.getEngine().executeScript(command);
 			}
 		}	
 	};
@@ -356,14 +326,9 @@ public class ACE4JavaFX extends Application
 		@Override
 		public void handle(ActionEvent arg0) 
 		{
-			String name = ((MenuItem)arg0.getTarget()).getText();
+			String mode = ((MenuItem)arg0.getTarget()).getText();
 			
-			String command = "editor.session.setMode(\"ace/mode/"+ name +"\");";
-			
-			System.out.println("Command is : " + command);
-			
-			// Set code mode. 
-			editorView.webView.getEngine().executeScript(command);	
+			editorCtrl.setMode(mode);
 		}	
 	};
 	
@@ -372,11 +337,10 @@ public class ACE4JavaFX extends Application
 		@Override
 		public void handle(ActionEvent arg0) 
 		{
-			String name = ((MenuItem)arg0.getTarget()).getText();
+			String theme = ((MenuItem)arg0.getTarget()).getText();
 			
-			// Set theme.
-			editorView.webView.getEngine().executeScript("editor.setTheme(\"ace/theme/"+ name +"\");");
-		}	
+			editorCtrl.setTheme(theme);
+		}
 	};
 	
 	private EventHandler<ActionEvent> fontSizeHandler = new EventHandler<ActionEvent>()
@@ -384,11 +348,10 @@ public class ACE4JavaFX extends Application
 		@Override
 		public void handle(ActionEvent arg0) 
 		{
-			String name = ((MenuItem)arg0.getTarget()).getText();
+			String size = ((MenuItem)arg0.getTarget()).getText().substring(0, 2);
 			
 			// Set font size. 
-			editorView.webView.getEngine().executeScript("editor.setFontSize(" + name.substring(0, 2) + ");");
+			editorCtrl.setFontSize(Integer.parseInt(size));
 		}
-		
 	};
 }
