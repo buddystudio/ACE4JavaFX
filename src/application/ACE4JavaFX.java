@@ -28,17 +28,17 @@ public class ACE4JavaFX extends Application
 	protected BDEditorView editorView;
 	protected BDEditorCtrl editorCtrl;
 	
+	private String curPath = this.getClass().getResource("/").getPath();
+	private String editorUrl = "file://" + curPath + "resources/ace-builds-master/editor.html";
+	private String acePath = "/resources/ace-builds-master/src-noconflict";
+	
 	public static void main(String[] args) 
 	{
 		Application.launch(args);
 	}
 	
-	private String curPath = this.getClass().getResource("/").getPath();
-	private String editorUrl = "file://" + curPath + "resources/ace-builds-master/editor.html";
-	private String acePath = "/resources/ace-builds-master/src-noconflict";
-	
 	@Override
-	public void start(Stage stage) 
+	public void start(Stage stage)
 	{
 		BorderPane root  = new BorderPane();
 
@@ -64,7 +64,7 @@ public class ACE4JavaFX extends Application
 		// File menu - new, save, exit
 	    Menu fileMenu = new Menu("File");
 	    
-	    MenuItem newMenuItem = new MenuItem("New");
+	    MenuItem newMenuItem  = new MenuItem("New");
 	    MenuItem openMenuItem = new MenuItem("Open");
 	    MenuItem saveMenuItem = new MenuItem("Save");
 	    MenuItem exitMenuItem = new MenuItem("Exit");
@@ -73,12 +73,12 @@ public class ACE4JavaFX extends Application
 	    
 	    Menu editMenu = new Menu("Edit");
 	    
-	    MenuItem undoItem = new MenuItem("Undo");
-	    MenuItem redoItem = new MenuItem("Redo");
-	    MenuItem copyItem = new MenuItem("Copy");
-	    MenuItem cutItem  = new MenuItem("Cut");
-	    MenuItem pasteItem = new MenuItem("Paste");
-	    MenuItem searchItem = new MenuItem("Serach");
+	    MenuItem undoItem 	= new MenuItem("Undo");
+	    MenuItem redoItem 	= new MenuItem("Redo");
+	    MenuItem copyItem 	= new MenuItem("Copy");
+	    MenuItem cutItem  	= new MenuItem("Cut");
+	    MenuItem pasteItem 	= new MenuItem("Paste");
+	    MenuItem searchItem = new MenuItem("Search");
 	    
 	    editMenu.getItems().addAll(undoItem, redoItem, copyItem, cutItem, pasteItem, searchItem);
 	    
@@ -87,11 +87,12 @@ public class ACE4JavaFX extends Application
 	    copyItem.setOnAction(editHandler);
 	    cutItem.setOnAction(editHandler);
 	    pasteItem.setOnAction(editHandler);
+	    searchItem.setOnAction(editHandler);
 	    
-	    Menu optionsMenu = new Menu("Options");
-	    Menu langMenu = new Menu("Langue");
-	    Menu themeMenu = new Menu("Theme");
-	    Menu fontSizeMenu = new Menu("Font Size");
+	    Menu optionsMenu 	= new Menu("Options");
+	    Menu langMenu 		= new Menu("Langue");
+	    Menu themeMenu 		= new Menu("Theme");
+	    Menu fontSizeMenu 	= new Menu("Font Size");
 	    
 	    ToggleGroup tGroup01 = new ToggleGroup();
 	    ToggleGroup tGroup02 = new ToggleGroup();
@@ -193,14 +194,7 @@ public class ACE4JavaFX extends Application
 				FileChooser fileChooser = new FileChooser();
 				
 				// Set file Filter.
-				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Arduino  (*.ino)", "*.ino"));
-				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("C++  (*.cpp)", "*.cpp"));;
-				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("C  (*.c)", "*.c"));
-				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Header Files  (*.h)", "*.h"));
-				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Java  (*.java)", "*.java"));
-				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Java Script  (*.js)", "*.js"));
-				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Python Code  (*.py)", "*.py"));
-				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text  (*.txt)", "*.txt"));
+				initFileChooser(fileChooser);
 				
 				// Show open file dialog
 				file = fileChooser.showOpenDialog(null);
@@ -245,14 +239,7 @@ public class ACE4JavaFX extends Application
 				FileChooser fileChooser = new FileChooser();
 				
 				// Set file Filter.
-				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Arduino  (*.ino)", "*.ino"));
-				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("C++  (*.cpp)", "*.cpp"));;
-				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("C  (*.c)", "*.c"));
-				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Header Files  (*.h)", "*.h"));
-				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Java  (*.java)", "*.java"));
-				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Java Script  (*.js)", "*.js"));
-				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Python Code  (*.py)", "*.py"));
-				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text  (*.txt)", "*.txt"));
+				initFileChooser(fileChooser);
 				
 				try
 				{
@@ -281,6 +268,19 @@ public class ACE4JavaFX extends Application
 			}
 		}
 	};
+	
+	private void initFileChooser(FileChooser fileChooser)
+	{
+		// Set file Filter.
+		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Arduino  (*.ino)", "*.ino"));
+		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("C++  (*.cpp)", "*.cpp"));;
+		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("C  (*.c)", "*.c"));
+		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Header Files  (*.h)", "*.h"));
+		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Java  (*.java)", "*.java"));
+		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Java Script  (*.js)", "*.js"));
+		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Python Code  (*.py)", "*.py"));
+		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text  (*.txt)", "*.txt"));
+	}
 	
 	private EventHandler<ActionEvent> editHandler = new EventHandler<ActionEvent>()
 	{
@@ -316,7 +316,8 @@ public class ACE4JavaFX extends Application
 			}
 			else if(name.equals("Search"))
 			{
-					
+				// Search
+				editorCtrl.search();
 			}
 		}	
 	};

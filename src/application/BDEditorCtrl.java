@@ -130,6 +130,23 @@ public class BDEditorCtrl
 		webView.getEngine().executeScript("editor.setTheme(\"ace/theme/"+ theme +"\");");
 	}
 	
+	public void setTabSize(int size)
+	{
+		// 设置默认制表符的大小
+		webView.getEngine().executeScript("editor.getSession().setTabSize(" + size + ");");
+	}
+	
+	public void setReadOnly(boolean flag)
+	{
+		// 设置编辑器只读
+		webView.getEngine().executeScript("editor.setReadOnly(" + flag + ");");
+	}
+	
+	public void resize()
+	{
+		webView.getEngine().executeScript("editor.resize();");
+	}
+	
 	// Undo
 	public void undo()
 	{
@@ -183,6 +200,13 @@ public class BDEditorCtrl
 		webView.getEngine().executeScript("editor.insert(\"" + code +"\");");		
 	}
 	
+	// Search
+	public void search()
+	{
+		// 与ctrl+f功能一致
+		webView.getEngine().executeScript("editor.execCommand('find');");
+	}
+	
 	// Find.
 	public void find(String keyword)
 	{
@@ -219,6 +243,12 @@ public class BDEditorCtrl
 	public void gotoLine(int num)
 	{
 		webView.getEngine().executeScript("editor.gotoLine(" + num + ");");
+	}
+	
+	public void moveCursorTo(int rows, int columns)
+	{
+		// 移动光标至第r行，第c列 
+		webView.getEngine().executeScript("editor.moveCursorTo(" + rows + ", " + columns + ");");
 	}
 	
 	// Get source code from the editor.

@@ -40,12 +40,19 @@ void loop()
 <script>
     var editor = ace.edit("editor");
 	
-	editor.setOptions({  
-        //      enableBasicAutocompletion: true,  
-        //      enableSnippets: true,  
-                enableLiveAutocompletion: true,//只能补全  
-            });  
+	ace.require("ace/ext/language_tools");
 	
+	editor.setOptions(
+	{  
+              enableBasicAutocompletion: true,  
+              enableSnippets: true,  
+              enableLiveAutocompletion: true, // 智能补全  
+    });
+    
+    //自动换行,设置为off关闭
+	editor.setOption("wrap", "free")  
+	
+	/*
 	editor.setTheme("ace/theme/ambiance");
 	editor.setTheme("ace/theme/chaos");
 	editor.setTheme("ace/theme/clouds");
@@ -82,6 +89,10 @@ void loop()
 	editor.setTheme("ace/theme/tomorrow_night_eighties");
 	editor.setTheme("ace/theme/twilight");
 	editor.setTheme("ace/theme/vibrant_ink");
+	editor.setTheme("ace/theme/xcode");
+	
+	*/
+	
 	editor.setTheme("ace/theme/xcode");
 	
     //editor.session.setMode("ace/mode/javascript");
