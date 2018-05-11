@@ -79,8 +79,9 @@ public class ACE4JavaFX extends Application
 	    MenuItem cutItem  	= new MenuItem("Cut");
 	    MenuItem pasteItem 	= new MenuItem("Paste");
 	    MenuItem searchItem = new MenuItem("Search");
+	    MenuItem testItem	= new MenuItem("Test");
 	    
-	    editMenu.getItems().addAll(undoItem, redoItem, copyItem, cutItem, pasteItem, searchItem);
+	    editMenu.getItems().addAll(undoItem, redoItem, copyItem, cutItem, pasteItem, searchItem, testItem);
 	    
 	    undoItem.setOnAction(editHandler);
 	    redoItem.setOnAction(editHandler);
@@ -88,6 +89,7 @@ public class ACE4JavaFX extends Application
 	    cutItem.setOnAction(editHandler);
 	    pasteItem.setOnAction(editHandler);
 	    searchItem.setOnAction(editHandler);
+	    testItem.setOnAction(editHandler);
 	    
 	    Menu optionsMenu 	= new Menu("Options");
 	    Menu langMenu 		= new Menu("Langue");
@@ -318,6 +320,31 @@ public class ACE4JavaFX extends Application
 			{
 				// Search
 				editorCtrl.search();
+			}
+			else if(name.equals("Test"))
+			{
+				String code = "";
+                
+                // 获取词位
+                int tabCount = editorCtrl.getCurColumn() - 1;
+                
+                code += "delay(1000);";
+                
+                code += "\\n";
+                
+                // 添加缩进
+                for(int i = 0; i < tabCount; i++)
+                {
+                    //code += "\\t";
+                	code += " ";
+                }
+                
+                code += "delay(1000);";
+                
+				editorCtrl.insert(code);
+			
+				//System.out.println(editorCtrl.getCurRow());
+				//System.out.println(editorCtrl.getCurColumn());
 			}
 		}	
 	};

@@ -32,7 +32,6 @@ public class BDEditorCtrl
 	                {  
 	            		if (newState == Worker.State.SUCCEEDED) 
 	                    {
-	                        
 	                        // ***** Test code *****
 	                        
 	                        //setFontSize(30);
@@ -54,26 +53,20 @@ public class BDEditorCtrl
 	                        // Insert Code.
 	                        //webView.getEngine().executeScript("editor.insert(\"" + code2 +"\");");
 	                        
-	                        //int cursor = (int) webView.getEngine().executeScript("editor.selection.getCursor()");
-	                        
-	                        //System.out.println(cursor);
-	                        
 	                        //webView.getEngine().executeScript("editor.gotoLine(3);");
-	                        
-	                        
 	                        
 	                        // Find
 	                        //webView.getEngine().executeScript("editor.find('int',{backwards: false,wrap: false,caseSensitive: false,wholeWord: false,regExp: false});");
 	                        
-	                        // ������һ������һ��
+	                        // Find Next and Find Previous.
 	                        //webView.getEngine().executeScript("editor.findNext();");
 	                        //webView.getEngine().executeScript("editor.findPrevious();");
 	                        
-	                        // �滻������
+	                        // Replace.
 	                        //webView.getEngine().executeScript("editor.find('int');");
 	                        //webView.getEngine().executeScript("editor.replace('float');");
 	                        
-	                        // ȫ���滻
+	                        // ReplaceAll.
 	                        //webView.getEngine().executeScript("editor.find('int');");
 	                        //webView.getEngine().executeScript("editor.replaceAll('float');");
 	                        
@@ -239,6 +232,12 @@ public class BDEditorCtrl
         webView.getEngine().executeScript("editor.replaceAll('" + keyword_B + "');");
 	}
 	
+	public void focus()
+	{
+		// 获取焦点
+		webView.getEngine().executeScript("editor.focus();");
+	}
+	
 	// Go to line.
 	public void gotoLine(int num)
 	{
@@ -258,6 +257,27 @@ public class BDEditorCtrl
 		String code = (String) webView.getEngine().executeScript("editor.getValue()");
         
 		return code;
+	}
+	
+	public JSObject getCursor()
+	{	
+		JSObject win  = (JSObject) webView.getEngine().executeScript("editor.selection.getCursor();");
+        
+		return win;
+	}
+	
+	public int getCurRow()
+	{
+		JSObject win = (JSObject) webView.getEngine().executeScript("editor.selection.getCursor();");
+		
+		return (int)win.getMember("row") + 1;
+	}
+	
+	public int getCurColumn()
+	{
+		JSObject win = (JSObject) webView.getEngine().executeScript("editor.selection.getCursor();");
+		
+		return (int)win.getMember("column") + 1;
 	}
 	
 	public int getLength()
