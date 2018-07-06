@@ -1,12 +1,22 @@
 package application;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.List;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
 import javafx.concurrent.Worker.State;
+import javafx.event.EventHandler;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -85,6 +95,72 @@ public class BDEditorCtrl
 	                    }
 	                }  
 	            });
+		
+		// Disable mouse events.
+		//this.webView.setMouseTransparent(true);
+		
+		//this.webView.setPickOnBounds(true);
+		
+		this.webView.setOnDragOver(new EventHandler<DragEvent>() 
+		{
+			@Override
+			public void handle(DragEvent event) 
+			{
+				//if (event.getGestureSource() != m_imageView) 
+				{
+					event.acceptTransferModes(TransferMode.ANY);
+				}
+			}
+		});
+		
+		this.webView.setOnDragDropped(new EventHandler<DragEvent>() 
+		{
+			@SuppressWarnings("unused")
+			@Override
+			public void handle(DragEvent event) 
+			{
+				Dragboard dragboard = event.getDragboard();
+				
+				List<File> files = dragboard.getFiles();
+				
+				if(files.size() > 0)
+				{
+					File file = files.get(0);
+					
+					//System.out.println(file.getPath());
+					
+					if(file == null)
+					{
+						return;
+					}
+					
+					try 
+					{
+						String code = BDCodeReader.readFileByLines(file.getPath());
+						
+						code = code.replaceAll("\"","\\\\\"");
+						
+						// Clean code.
+						webView.getEngine().executeScript("editor.setValue('');");
+						
+						// Set Code.
+						webView.getEngine().executeScript("editor.insert(\"" + code +"\");");
+					} 
+					catch (UnsupportedEncodingException e) 
+					{
+						e.printStackTrace();
+					} 
+					catch (FileNotFoundException e) 
+					{
+						e.printStackTrace();
+					} 
+					catch (IOException e) 
+					{
+						e.printStackTrace();
+					}
+				}
+			}
+		});
 	}
 	
 	public void onChange()
@@ -125,13 +201,13 @@ public class BDEditorCtrl
 	
 	public void setTabSize(int size)
 	{
-		// 设置默认制表符的大小
+		// Set font size.
 		webView.getEngine().executeScript("editor.getSession().setTabSize(" + size + ");");
 	}
 	
 	public void setReadOnly(boolean flag)
 	{
-		// 设置编辑器只读
+		// 
 		webView.getEngine().executeScript("editor.setReadOnly(" + flag + ");");
 	}
 	
@@ -202,7 +278,7 @@ public class BDEditorCtrl
 	// Search
 	public void search()
 	{
-		// 与ctrl+f功能一致
+		// 涓巆trl+f鍔熻兘涓�鑷�
 		webView.getEngine().executeScript("editor.execCommand('find');");
 	}
 	
@@ -240,7 +316,7 @@ public class BDEditorCtrl
 	
 	public void focus()
 	{
-		// 获取焦点
+		// 鑾峰彇鐒︾偣
 		webView.getEngine().executeScript("editor.focus();");
 	}
 	
@@ -252,7 +328,7 @@ public class BDEditorCtrl
 	
 	public void moveCursorTo(int rows, int columns)
 	{
-		// 移动光标至第r行，第c列 
+		// 绉诲姩鍏夋爣鑷崇r琛岋紝绗琧鍒� 
 		webView.getEngine().executeScript("editor.moveCursorTo(" + rows + ", " + columns + ");");
 	}
 	

@@ -17,11 +17,14 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 public class ACE4JavaFX extends Application 
 {
@@ -40,6 +43,34 @@ public class ACE4JavaFX extends Application
 	@Override
 	public void start(Stage stage)
 	{
+		DraggableTab tab1 = new DraggableTab("Tab 1");
+		 
+	    tab1.setClosable(false);
+	    tab1.setDetachable(false);
+	    tab1.setContent(new Rectangle(500, 500, Color.BLACK));
+	        
+	    DraggableTab tab2 = new DraggableTab("Tab 2");
+	     
+	    tab2.setClosable(false);
+	    tab2.setContent(new Rectangle(500, 500, Color.RED));
+	     
+	    DraggableTab tab3 = new DraggableTab("Tab 3");
+	     
+	    tab3.setClosable(false);
+	    tab3.setContent(new Rectangle(500, 500, Color.BLUE));
+	     
+	    DraggableTab tab4 = new DraggableTab("Tab 4");
+	     
+	    tab4.setClosable(false);
+	    tab4.setContent(new Rectangle(500, 500, Color.ORANGE));
+	     
+	    TabPane tabs = new TabPane();
+	     
+	    tabs.getTabs().add(tab1);
+	    tabs.getTabs().add(tab2);
+	    tabs.getTabs().add(tab3);
+	    tabs.getTabs().add(tab4);
+		
 		BorderPane root  = new BorderPane();
 
 		editorView = new BDEditorView(stage, editorUrl);
@@ -50,7 +81,9 @@ public class ACE4JavaFX extends Application
 	    this.addMenu(menuBar);
 	    
 	    root.setTop(menuBar);
-	    root.setCenter(editorView);
+	    //root.setCenter(editorView);
+	    tab1.setContent(editorView);
+	    root.setCenter(tabs);
 	    
 	    Scene scene = new Scene(root);
 		
@@ -193,7 +226,7 @@ public class ACE4JavaFX extends Application
 			}
 			else if(name.equals("Open"))
 			{
-				File file =  null;
+				File file = null;
 				
 				FileChooser fileChooser = new FileChooser();
 				
@@ -332,14 +365,13 @@ public class ACE4JavaFX extends Application
 			{
 				String code = "";
                 
-                // 获取词位
+                // Get tab.
                 int tabCount = editorCtrl.getCurColumn() - 1;
                 
                 code += "delay(1000);";
                 
                 code += "\\n";
                 
-                // 添加缩进
                 for(int i = 0; i < tabCount; i++)
                 {
                     //code += "\\t";

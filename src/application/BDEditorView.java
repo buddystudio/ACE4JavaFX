@@ -3,8 +3,6 @@ package application;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebView;
 import javafx.stage.Window;
-import netscape.javascript.JSObject;
-
 
 public class BDEditorView extends BorderPane 
 {	
