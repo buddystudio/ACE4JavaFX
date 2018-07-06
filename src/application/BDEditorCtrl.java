@@ -40,8 +40,8 @@ public class BDEditorCtrl
 	                        //find("void");
 	                        //repalceAll("void", "abcd");
 	                        
-	                        System.out.println(getCode());
-	                        System.out.println("Code length is: " + getLength());
+	                        //System.out.println(getCode());
+	                        //System.out.println("Code length is: " + getLength());
 	                        
 	                        // ***** End test *****
 	                        
@@ -133,6 +133,12 @@ public class BDEditorCtrl
 	{
 		// 设置编辑器只读
 		webView.getEngine().executeScript("editor.setReadOnly(" + flag + ");");
+	}
+	
+	public void setCode(String code)
+	{
+		// 设置代码
+		webView.getEngine().executeScript("editor.setValue(\"" + code + "\");");
 	}
 	
 	public void resize()

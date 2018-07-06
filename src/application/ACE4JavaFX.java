@@ -48,7 +48,7 @@ public class ACE4JavaFX extends Application
 		MenuBar menuBar = new MenuBar();
 	    
 	    this.addMenu(menuBar);
-
+	    
 	    root.setTop(menuBar);
 	    root.setCenter(editorView);
 	    
@@ -73,6 +73,7 @@ public class ACE4JavaFX extends Application
 	    
 	    Menu editMenu = new Menu("Edit");
 	    
+	    MenuItem clearItem 	= new MenuItem("Clear");
 	    MenuItem undoItem 	= new MenuItem("Undo");
 	    MenuItem redoItem 	= new MenuItem("Redo");
 	    MenuItem copyItem 	= new MenuItem("Copy");
@@ -81,8 +82,9 @@ public class ACE4JavaFX extends Application
 	    MenuItem searchItem = new MenuItem("Search");
 	    MenuItem testItem	= new MenuItem("Test");
 	    
-	    editMenu.getItems().addAll(undoItem, redoItem, copyItem, cutItem, pasteItem, searchItem, testItem);
+	    editMenu.getItems().addAll(clearItem, undoItem, redoItem, copyItem, cutItem, pasteItem, searchItem, testItem);
 	    
+	    clearItem.setOnAction(editHandler);
 	    undoItem.setOnAction(editHandler);
 	    redoItem.setOnAction(editHandler);
 	    copyItem.setOnAction(editHandler);
@@ -320,6 +322,11 @@ public class ACE4JavaFX extends Application
 			{
 				// Search
 				editorCtrl.search();
+			}
+			else if(name.equals("Clear"))
+			{
+				// Search
+				editorCtrl.setCode("");
 			}
 			else if(name.equals("Test"))
 			{
