@@ -191,7 +191,7 @@ public class ACE4JavaFX extends Application
 			}
 			else if(name.equals("Open"))
 			{
-				File file =  null;
+				File file = null;
 				
 				FileChooser fileChooser = new FileChooser();
 				
@@ -325,14 +325,13 @@ public class ACE4JavaFX extends Application
 			{
 				String code = "";
                 
-                // 获取词位
+                // Get tab.
                 int tabCount = editorCtrl.getCurColumn() - 1;
                 
                 code += "delay(1000);";
                 
                 code += "\\n";
                 
-                // 添加缩进
                 for(int i = 0; i < tabCount; i++)
                 {
                     //code += "\\t";
